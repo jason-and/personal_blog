@@ -1,17 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }}</title>
-  <link rel="stylesheet" href="/css/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} - {% endif %}Your Blog Name</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <h1>{{ title }}</h1>
-  </header>
-  <main>
-    {{ content | safe }}
-  </main>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/tags">Tags</a></li>
+                <li><a href="/changelog">Changelog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% if title %}
+        <h1>{{ title }}</h1>
+        {% endif %}
+
+        {% if date %}
+        <div class="metadata">
+            <p>Created: {{ date | dateDisplay }}</p>
+            {% if modified %}
+            <p>Last modified: {{ modified | dateDisplay }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {{ content | safe }}
+
+        {% if tags %}
+        <div class="tags">
+            <h2>Tags:</h2>
+            <ul>
+            {% for tag in tags %}
+                <li><a href="/tags/{{ tag }}">{{ tag }}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if collections.backlinks[page.fileSlug] %}
+        <div class="backlinks">
+            <h2>Backlinks:</h2>
+            <ul>
+            {% for backlink in collections.backlinks[page.fileSlug] %}
+                <li><a href="{{ backlink.url }}">{{ backlink.title }}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ page.date.getFullYear() }} Your Name</p>
+    </footer>
 </body>
 </html>
