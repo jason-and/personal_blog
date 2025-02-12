@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  blog:
+    build: .
+    container_name: blog
+    networks:
+      - web
+    restart: unless-stopped
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - web
+    depends_on:
+      - blog
+
+networks:
+  web:
+    driver: bridge
