@@ -9,7 +9,7 @@ module.exports = function(eleventyConfig) {
     breaks: true,
     linkify: true
   };
-  
+
   const md = markdownIt(mdOptions)
     .use(markdownItWikilinks({
       uriSuffix: '',
@@ -25,6 +25,17 @@ module.exports = function(eleventyConfig) {
   // Pass through copy for images and CSS
   eleventyConfig.addPassthroughCopy("src/assets");
   eleventyConfig.addPassthroughCopy("src/css");
+
+
+  //for adding quarto content at a later time
+  //eleventyConfig.addPassthroughCopy({
+  //  "src/_quarto_output/**/*.html": "posts/quarto/",
+  //  "src/_quarto_output/**/*.css": "assets/css/",
+  //  "src/_quarto_output/**/*.js": "assets/js/",
+  //  "src/_quarto_output/**/*.png": "assets/images/",
+  //  "src/_quarto_output/**/*.jpg": "assets/images/"
+  //});
+  //
 
   // Add date filters
   eleventyConfig.addFilter("dateDisplay", (dateObj) => {

@@ -8,6 +8,12 @@ RUN apk add --no-cache \
     g++ \
     git
 
+
+
+#RUN wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.4.549/quarto-1.4.549-linux-amd64.deb
+#RUN dpkg -i quarto-1.4.549-linux-amd64.deb
+
+
 # Set working directory
 WORKDIR /app
 
@@ -17,6 +23,10 @@ RUN npm --version
 
 # Copy package files first
 COPY package*.json ./
+
+# First, render Quarto documents
+#RUN mkdir -p src/_quarto_output
+#RUN find src/quarto -name "*.qmd" -exec quarto render {} --output-dir ../src/_quarto_output \;
 
 # Install with additional verbosity
 RUN npm install --verbose
