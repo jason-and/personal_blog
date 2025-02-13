@@ -15,6 +15,7 @@ yarn-error.log*
 # 11ty output
 _site/
 dist/
+src/posts/test_post.md
 
 # System files
 .DS_Store
