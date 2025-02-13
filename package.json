@@ -1,5 +1,5 @@
 {
-  "name": "Andrew's Atlas",
+  "name": "andrew's-atlas",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -12,8 +12,17 @@
   "description": "",
   "dependencies": {
     "@11ty/eleventy": "^2.0.1",
-    "markdown-it": "^14.0.0",
-    "markdown-it-wikilinks": "^1.0.0",
-    "markdown-it-anchor": "^8.6.0"
-  }
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^8.6.7",
+    "markdown-it-wikilinks": "^1.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jason-and/personal_blog.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jason-and/personal_blog/issues"
+  },
+  "homepage": "https://github.com/jason-and/personal_blog#readme"
 }
