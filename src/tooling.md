@@ -21,8 +21,9 @@ type: page
 
 # Software
 
-- OS
+- Computer
 	- Endeavor OS
+	- Wezterm
 - Research
 	- R
 	- Qgis
