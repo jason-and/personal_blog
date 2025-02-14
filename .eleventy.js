@@ -10,6 +10,10 @@ module.exports = function(eleventyConfig) {
     linkify: true
   };
 
+  eleventyConfig.addLayoutAlias('base', 'layouts/base.njk');
+  eleventyConfig.addLayoutAlias('post', 'layouts/post.njk');
+
+
   const md = markdownIt(mdOptions)
     .use(markdownItWikilinks({
       uriSuffix: '',
@@ -86,8 +90,7 @@ module.exports = function(eleventyConfig) {
       input: "src",
       output: "_site",
       includes: "_includes",
-      layouts: "_layouts",
-      data: "_data"
+      data: "_data",
     },
     templateFormats: ["md", "njk", "html"],
     markdownTemplateEngine: "njk"

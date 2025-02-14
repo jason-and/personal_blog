@@ -1,0 +1,9 @@
+{
+  "layout": "post",
+  "tags": ["posts"],
+  "permalink": "/{{ page.fileSlug }}/",
+  "dateFormat": "MMMM D, YYYY",
+  "eleventyComputed": {
+    "isDraft": "{% if draft %}true{% else %}false{% endif %}"
+  }
+}

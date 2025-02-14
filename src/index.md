@@ -1,6 +1,7 @@
 ---
 layout: base
 title: welcome!
+templateEngineOverride: njk,md
 ---
 # 
 
@@ -10,5 +11,8 @@ I plan to use this space to work out in public what I am thinking though at any 
 Based in the Midwest on the edge of Lake Michigan.
 
 
-## Recent Updates
-{% include "posts-list.njk" %}
+## Recent
+
+{% include "post-list.njk" %}
+
+

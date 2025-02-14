@@ -8,7 +8,7 @@ tags:
   - raspberrypi
   - diy
 status: published
-modified: 02/13/2024
+modified: 2024-02-13
 ---
 # Some background
 
