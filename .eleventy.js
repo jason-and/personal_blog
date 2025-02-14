@@ -50,16 +50,32 @@ module.exports = function(eleventyConfig) {
     });
   });
 
-  // Add collection for tagged content
-  eleventyConfig.addCollection("tagList", function(collection) {
-    const tagSet = new Set();
-    collection.getAll().forEach(item => {
-      if (item.data.tags) {
-        item.data.tags.forEach(tag => tagSet.add(tag));
-      }
-    });
-    return Array.from(tagSet).sort();
+
+  // Create a filtered collection of only published posts
+  eleventyConfig.addCollection("publishedPosts", function(collectionApi) {
+    return collectionApi.getFilteredByTag("posts")
+      .filter(post => post.data.status === "published")
+      .reverse(); // Most recent first
   });
+
+  // Create a filtered collection of only published posts
+  eleventyConfig.addCollection("photography", function(collectionApi) {
+    return collectionApi.getFilteredByTag("photography")
+      .filter(post => post.data.status === "published")
+      .reverse(); // Most recent first
+  });
+
+
+  // Add collection for tagged content
+  //eleventyConfig.addCollection("tagList", function(collection) {
+  //  const tagSet = new Set();
+  //  collection.getAll().forEach(item => {
+  //    if (item.data.tags) {
+  //      item.data.tags.forEach(tag => tagSet.add(tag));
+  //    }
+  //  });
+  //  return Array.from(tagSet).sort();
+  //});
 
   // Add collection for backlinks
   eleventyConfig.addCollection("backlinks", function(collection) {

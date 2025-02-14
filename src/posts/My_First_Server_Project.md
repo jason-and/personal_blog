@@ -1,6 +1,6 @@
 ---
 title: My First Server Project
-date: 2024-02-13
+created date: 2024-02-13
 tags:
   - selfhosting
   - linux

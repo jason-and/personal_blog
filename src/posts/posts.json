@@ -4,6 +4,7 @@
   "permalink": "/{{ page.fileSlug }}/",
   "dateFormat": "MMMM D, YYYY",
   "eleventyComputed": {
-    "isDraft": "{% if draft %}true{% else %}false{% endif %}"
+    "permalink": "{% if status != 'published' %}false{% else %}/{{ page.fileSlug }}/{% endif %}"
   }
 }
+
