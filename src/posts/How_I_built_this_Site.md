@@ -7,7 +7,7 @@ tags:
   - networking
   - selfhosting
 status: published
-modified: <% tp.date.now("YYYY-MM-DD") %>
+modified: 02/14/2024
 ---
 
 # The Stack
