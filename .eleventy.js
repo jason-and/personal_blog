@@ -27,8 +27,8 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.setLibrary("md", md);
 
   // Pass through copy for images and CSS
-  eleventyConfig.addPassthroughCopy("src/images/");
-  eleventyConfig.addPassthroughCopy("src/css/");
+  eleventyConfig.addPassthroughCopy("src/assets");
+  eleventyConfig.addPassthroughCopy("src/css");
 
 
   //for adding quarto content at a later time
@@ -49,6 +49,7 @@ module.exports = function(eleventyConfig) {
       day: 'numeric'
     });
   });
+
 
   // Create a filtered collection of only published posts
   eleventyConfig.addCollection("publishedPosts", function(collectionApi) {
