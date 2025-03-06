@@ -42,66 +42,119 @@ module.exports = function (eleventyConfig) {
   //
 
   // Add date filters
-  eleventyConfig.addFilter("dateDisplay", (dateObj) => {
-    return new Date(dateObj).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  // Add this to your .eleventy.js file
+  eleventyConfig.addFilter("dateDisplay", function (dateStr) {
+    if (!dateStr) return "";
+
+    try {
+      // Handle YYYY-MM-DD format specifically
+      if (typeof dateStr === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        const [year, month, day] = dateStr
+          .split("-")
+          .map((num) => parseInt(num, 10));
+        // Create date with local timezone (months are 0-based in JS)
+        const date = new Date(year, month - 1, day);
+
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      // Handle other date formats
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return "";
+
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch (e) {
+      console.error("Date error:", e);
+      return "";
+    }
   });
 
-  // Create a filtered collection of only published posts
+  eleventyConfig.addFilter("convertToDate", function (dateStr) {
+    if (!dateStr) return new Date();
+
+    // Handle YYYY-MM-DD format
+    if (typeof dateStr === "string" && dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      const [year, month, day] = dateStr
+        .split("-")
+        .map((part) => parseInt(part, 10));
+      return new Date(year, month - 1, day);
+    }
+
+    // Default case
+    return new Date(dateStr);
+  });
+
   eleventyConfig.addCollection("publishedPosts", function (collectionApi) {
     return collectionApi
       .getFilteredByTag("posts")
+      .sort(function (a, b) {
+        return b.date - a.date;
+      })
       .filter((post) => post.data.status === "published");
   });
 
-  // Create a filtered collection of only published posts
-  eleventyConfig.addCollection(
-    "publishedPostsByCreationDate",
-    function (collectionApi) {
-      return collectionApi
-        .getFilteredByTag("publishedPosts")
-        .sort((a, b) => {
-          return new Date(a.data.created) - new Date(b.data.created);
-        })
-        .reverse(); // Most recent first
-    },
-  );
-
-  // Create a filtered collection of modified content
+  //  "publishedPostsByCreationDate",
+  //  function (collectionApi) {
+  //    return collectionApi
+  //      .getFilteredByTag("publishedPosts")
+  //      .sort((a, b) => {
+  //        // Handle different field names for creation date
+  //        const dateA =
+  //          a.data.created || a.data["created date"] || a.data.date || a.date;
+  //        const dateB =
+  //          b.data.created || b.data["created date"] || b.data.date || b.date;
+  //
+  //        // Convert to Date objects for comparison (handles various formats)
+  //        return new Date(dateA) - new Date(dateB);
+  //      })
+  //      .reverse(); // Most recent first
+  //  },
+  //);
+  //
+  // Create a filtered collection of modified content (excluding pages)
   eleventyConfig.addCollection(
     "contentByModifiedDate",
     function (collectionApi) {
       return collectionApi
         .getAll()
-        .filter((post) => post.data.status !== "draft")
-        .sort((a, b) => {
-          return new Date(a.data.modified) - new Date(b.data.modified);
+        .filter((item) => {
+          // First check if the item has a data object
+          if (!item.data) return false;
+
+          // Skip items explicitly marked as page
+          if (item.data.type === "page") return false;
+
+          // Skip items without a title (like "Oops! Not Found")
+          if (!item.data.title) return false;
+
+          // Skip drafts
+          if (item.data.status === "draft") return false;
+
+          // Only include items with a valid modified date
+          if (!item.data.modified) return false;
+
+          // Try to create a valid date
+          const modifiedDate = new Date(item.data.modified);
+          if (isNaN(modifiedDate.getTime())) return false;
+
+          return true;
         })
-        .reverse(); // Most recent first
+        .sort((a, b) => {
+          // Sort by modified date
+          const dateA = new Date(a.data.modified);
+          const dateB = new Date(b.data.modified);
+          return dateB - dateA; // Most recent first
+        });
     },
   );
-
-  // Create a filtered collection of photography
-  eleventyConfig.addCollection("photography", function (collectionApi) {
-    return collectionApi
-      .getFilteredByTag("photography")
-      .filter((post) => post.data.status === "published")
-      .reverse(); // Most recent first
-  });
-
-  // Add collection for tagged content
-  //eleventyConfig.addCollection("tagList", function(collection) {
-  //  const tagSet = new Set();
-  //  collection.getAll().forEach(item => {
-  //    if (item.data.tags) {
-  //      item.data.tags.forEach(tag => tagSet.add(tag));
-  //    }
-  //  });
-  //  return Array.from(tagSet).sort();
-  //});
 
   // Add collection for backlinks
   eleventyConfig.addCollection("backlinks", function (collection) {
