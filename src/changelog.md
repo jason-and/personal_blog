@@ -3,8 +3,12 @@ layout: base
 title: Changelog
 type: page
 ---
-{% for post in collections.publishedPosts | reverse %}
-{% if post.data.modified %}
-- {{ post.data.modified | dateDisplay }} - [{{ post.data.title }}]({{ post.url }}) updated
-{% endif %}
+
+<ul>
+{% for item in collections.contentByModifiedDate %}
+<li>
+  <a href="{{ item.url }}">{{ item.data.title }}</a>
+  <span class="update-date">Updated: {{ item.data.modified | dateFilter }}</span>
+</li>
 {% endfor %}
+</ul>

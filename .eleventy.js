@@ -1,27 +1,28 @@
-const markdownIt = require('markdown-it');
-const markdownItWikilinks = require('markdown-it-wikilinks');
-const markdownItAnchor = require('markdown-it-anchor');
+const markdownIt = require("markdown-it");
+const markdownItWikilinks = require("markdown-it-wikilinks");
+const markdownItAnchor = require("markdown-it-anchor");
 
-module.exports = function(eleventyConfig) {
+module.exports = function (eleventyConfig) {
   // Configure Markdown processing
   const mdOptions = {
     html: true,
     breaks: true,
-    linkify: true
+    linkify: true,
   };
 
-  eleventyConfig.addLayoutAlias('base', 'layouts/base.njk');
-  eleventyConfig.addLayoutAlias('post', 'layouts/post.njk');
-
+  eleventyConfig.addLayoutAlias("base", "layouts/base.njk");
+  eleventyConfig.addLayoutAlias("post", "layouts/post.njk");
 
   const md = markdownIt(mdOptions)
-    .use(markdownItWikilinks({
-      uriSuffix: '',
-      makeAllLinksAbsolute: true,
-      postProcessPageName: (pageName) => {
-        return pageName.toLowerCase().replace(/\s/g, '-');
-      }
-    }))
+    .use(
+      markdownItWikilinks({
+        uriSuffix: "",
+        makeAllLinksAbsolute: true,
+        postProcessPageName: (pageName) => {
+          return pageName.toLowerCase().replace(/\s/g, "-");
+        },
+      }),
+    )
     .use(markdownItAnchor);
 
   eleventyConfig.setLibrary("md", md);
@@ -29,7 +30,6 @@ module.exports = function(eleventyConfig) {
   // Pass through copy for images and CSS
   eleventyConfig.addPassthroughCopy("src/assets");
   eleventyConfig.addPassthroughCopy("src/css");
-
 
   //for adding quarto content at a later time
   //eleventyConfig.addPassthroughCopy({
@@ -43,28 +43,45 @@ module.exports = function(eleventyConfig) {
 
   // Add date filters
   eleventyConfig.addFilter("dateDisplay", (dateObj) => {
-    return new Date(dateObj).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateObj).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   });
 
-
   // Create a filtered collection of only published posts
-  eleventyConfig.addCollection("publishedPosts", function(collectionApi) {
-    return collectionApi.getFilteredByTag("posts")
-      .filter(post => post.data.status === "published")
+  eleventyConfig.addCollection("publishedPosts", function (collectionApi) {
+    return collectionApi
+      .getFilteredByTag("posts")
+      .filter((post) => post.data.status === "published")
+      .sort((a, b) => {
+        return new Date(a.data.created) - new Date(b.data.created);
+      })
       .reverse(); // Most recent first
   });
 
-  // Create a filtered collection of only published posts
-  eleventyConfig.addCollection("photography", function(collectionApi) {
-    return collectionApi.getFilteredByTag("photography")
-      .filter(post => post.data.status === "published")
+  // Create a filtered collection of modified content
+  eleventyConfig.addCollection(
+    "contentByModifiedDate",
+    function (collectionApi) {
+      return collectionApi
+        .getAll()
+        .filter((post) => post.data.status !== "draft")
+        .sort((a, b) => {
+          return new Date(a.data.modified) - new Date(b.data.modified);
+        })
+        .reverse(); // Most recent first
+    },
+  );
+
+  // Create a filtered collection of photography
+  eleventyConfig.addCollection("photography", function (collectionApi) {
+    return collectionApi
+      .getFilteredByTag("photography")
+      .filter((post) => post.data.status === "published")
       .reverse(); // Most recent first
   });
-
 
   // Add collection for tagged content
   //eleventyConfig.addCollection("tagList", function(collection) {
@@ -78,22 +95,23 @@ module.exports = function(eleventyConfig) {
   //});
 
   // Add collection for backlinks
-  eleventyConfig.addCollection("backlinks", function(collection) {
+  eleventyConfig.addCollection("backlinks", function (collection) {
     const backlinks = {};
-    collection.getAll().forEach(item => {
+    collection.getAll().forEach((item) => {
       // Skip if no content
       if (!item.template.frontMatter.content) return;
 
       // Find all wikilinks in the content
-      const matches = item.template.frontMatter.content.matchAll(/\[\[(.*?)\]\]/g);
+      const matches =
+        item.template.frontMatter.content.matchAll(/\[\[(.*?)\]\]/g);
       for (const match of matches) {
-        const linkedTitle = match[1].toLowerCase().replace(/\s/g, '-');
+        const linkedTitle = match[1].toLowerCase().replace(/\s/g, "-");
         if (!backlinks[linkedTitle]) {
           backlinks[linkedTitle] = [];
         }
         backlinks[linkedTitle].push({
           url: item.url,
-          title: item.data.title
+          title: item.data.title,
         });
       }
     });
@@ -109,6 +127,6 @@ module.exports = function(eleventyConfig) {
       data: "_data",
     },
     templateFormats: ["md", "njk", "html"],
-    markdownTemplateEngine: "njk"
+    markdownTemplateEngine: "njk",
   };
 };
