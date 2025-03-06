@@ -55,11 +55,17 @@ module.exports = function (eleventyConfig) {
     return collectionApi
       .getFilteredByTag("posts")
       .filter((post) => post.data.status === "published")
+        });
+
+// Create a filtered collection of only published posts
+  eleventyConfig.addCollection("publishedPostsByCreationDate", function (collectionApi) {
+    return collectionApi
+      .getFilteredByTag("publishedPosts")
       .sort((a, b) => {
         return new Date(a.data.created) - new Date(b.data.created);
       })
       .reverse(); // Most recent first
-  });
+
 
   // Create a filtered collection of modified content
   eleventyConfig.addCollection(

@@ -2,6 +2,7 @@
 layout: base
 title: Changelog
 type: page
+modified:
 ---
 
 <ul>

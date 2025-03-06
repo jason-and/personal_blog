@@ -1,7 +1,8 @@
----
+	 ---
 layout: base
 title: tooling I use
 type: page
+modified:
 ---
 # Hardware
 
