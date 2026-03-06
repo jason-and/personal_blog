@@ -42,7 +42,6 @@ module.exports = function (eleventyConfig) {
   //
 
   // Add date filters
-  // Add this to your .eleventy.js file
   eleventyConfig.addFilter("dateDisplay", function (dateStr) {
     if (!dateStr) return "";
 
@@ -178,6 +177,18 @@ module.exports = function (eleventyConfig) {
       }
     });
     return backlinks;
+  });
+
+  // Gallery collection: any content with a gallery_image that isn't a draft
+  eleventyConfig.addCollection("galleryItems", function (collectionApi) {
+    return collectionApi
+      .getAll()
+      .filter((item) => {
+        if (!item.data.gallery_image) return false;
+        if (item.data.status === "draft") return false;
+        return true;
+      })
+      .sort((a, b) => b.date - a.date);
   });
 
   // Configure directory structure
